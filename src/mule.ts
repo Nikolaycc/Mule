@@ -3,7 +3,8 @@ import {
     renderToReadableStream,
     renderToPipeableStream,
 } from "react-dom/server";
-import * as fs from "node:fs";
+
+// import * as fs from "node:fs";
 
 export default class Mule {
     port: number;
@@ -40,13 +41,28 @@ export default class Mule {
                 console.log(req);
 
                 if (match != null) {
-                    let response = new Response();
-                    let res = fs.createWriteStream("temp");
-                    let module = await import(match.filePath);
+                    // let module = await import(match.filePath);
 
                     // const code = Bun.file(match.filePath);
                     // t.transformSync(await code.text());
-                    let defaultFunc = module.default;
+                    // let defaultFunc = module.default;
+
+                    // CRASH!!!
+                    // import(filePath).then((module) => {
+                    //     let defaultExportFunction = module.default;
+
+                    //     console.log(defaultExportFunction());
+                    // });
+
+                    // ANOTHER CRASH!!
+                    // let defaultFunc = import(filePath).then((module) => {
+                    //     let defaultExportFunction = module.default;
+
+                    //     defaultExportFunction
+                    // });
+
+                    let defaultFunc = await import(match.filePath);
+                    defaultFunc = defaultFunc.default;
 
                     const stream = await renderToReadableStream(defaultFunc(), {
                         bootstrapModules: [
